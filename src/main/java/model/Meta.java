@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public class Meta {
     public boolean has_more;
     public String after_cursor;

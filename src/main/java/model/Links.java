@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public class Links {
     private String prev;
     private String next;

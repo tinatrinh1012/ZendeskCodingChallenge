@@ -9,19 +9,15 @@ import model.TicketViewer;
 import netscape.javascript.JSObject;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Base64;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
-/**
- * Hello world!
- *
- */
-public class App 
+
+public class App
 {
     public static void main( String[] args ) throws IOException, InterruptedException {
 
@@ -29,6 +25,7 @@ public class App
         String userChoice;
         System.out.println("\n \n");
         System.out.println("*** WELCOME TO TICKET VIEWER APP! ***");
+
         while (true) {
             System.out.println();
             System.out.println("** MAIN MENU **");
@@ -41,46 +38,49 @@ public class App
             System.out.println();
 
             if (userChoice.equals("1")) {
-                TicketViewer ticketViewer = TicketViewer.getAllTickets();
-                System.out.println(ticketViewer);
+                try {
+                    TicketViewer ticketViewer = TicketViewer.getAllTickets();
+                    System.out.println(ticketViewer);
 
-                while (true) {
-                    System.out.println();
-                    System.out.println("Enter an option number to continue");
-                    System.out.println("1. Return to main menu");
-                    System.out.println("2. Previous page");
-                    System.out.println("3. Next page");
-                    System.out.print("Your choice: ");
-                    userChoice = scanner.nextLine();
-                    System.out.println();
+                    while (true) {
+                        System.out.println();
+                        System.out.println("Enter an option number to continue");
+                        System.out.println("1. Return to main menu");
+                        System.out.println("2. Previous page");
+                        System.out.println("3. Next page");
+                        System.out.print("Your choice: ");
+                        userChoice = scanner.nextLine();
+                        System.out.println();
 
-                    if (userChoice.equals("1")) {
-                        break;
-                    } else if (userChoice.equals("2")) {
-                        if (ticketViewer.pageCount > 1) {
+                        if (userChoice.equals("1")) {
+                            break;
+                        } else if (userChoice.equals("2")) {
                             ticketViewer = ticketViewer.getPreviousPage();
                             System.out.println(ticketViewer);
-                        } else {
-                            System.out.println("** ATTENTION: This is the first page! Please choose another option. **");
-                        }
-                    } else if (userChoice.equals("3")) {
-                        if (ticketViewer.meta.has_more) {
+
+                        } else if (userChoice.equals("3")) {
                             ticketViewer = ticketViewer.getNextPage();
                             System.out.println(ticketViewer);
                         } else {
-                            System.out.println("** ATTENTION: This is the last page! Please choose another option. **");
+                            System.out.println("** ATTENTION: Please enter valid option number! **");
                         }
-                    } else {
-                        System.out.println("** ATTENTION: Please enter valid option number! **");
                     }
+                } catch (ConnectException e) {
+                    System.out.println("** ATTENTION: Zendesk API is not available. Check your connection. **");
                 }
 
             } else if (userChoice.equals("2")) {
-                System.out.print("Enter ticket id: ");
-                userChoice = scanner.nextLine();
-                TicketViewer ticketViewer = TicketViewer.getTicketById(Integer.parseInt(userChoice));
-                System.out.println(ticketViewer.toStringIndividual());
-
+                TicketViewer ticketViewer;
+                try {
+                    System.out.print("Enter ticket id: ");
+                    userChoice = scanner.nextLine();
+                    ticketViewer = TicketViewer.getTicketById(Integer.parseInt(userChoice));
+                    System.out.println(ticketViewer.toStringIndividual());
+                } catch (NumberFormatException e) {
+                    System.out.println("** ATTENTION: Invalid id. Id needs to be a positive integer (so space allowed). Returning to main menu. **");
+                } catch (IOException e) {
+                    System.out.println("** ATTENTION: Didn't find a ticket with the provided id. Returning to main menu.");
+                }
             } else if (userChoice.equals("3")) {
                 System.out.println("*** THANKS FOR USING TICKETS VIEWER! ***");
                 break;

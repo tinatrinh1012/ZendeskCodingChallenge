@@ -2,26 +2,32 @@ package model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.Arrays;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Ticket {
     private String url;
     private int id;
-    //private int requester_id;
-    //private int assignee_id;
+    private long requester_id;
+    private long assignee_id;
     private String subject;
     private String created_at;
     private String description;
+    private String[] tags;
 
     public Ticket() {
         super();
     }
 
-    public Ticket(int id, String subject, String createdAt) {
+    public Ticket(String url, int id, long requester_id, long assignee_id, String subject, String created_at, String description, String[] tags) {
+        this.url = url;
         this.id = id;
-        //this.requester_id = requester_id;
-        //this.assignee_id = assignee_id;
+        this.requester_id = requester_id;
+        this.assignee_id = assignee_id;
         this.subject = subject;
-        this.created_at = createdAt;
+        this.created_at = created_at;
+        this.description = description;
+        this.tags = tags;
     }
 
     public int getId() {
@@ -40,25 +46,24 @@ public class Ticket {
         this.description = description;
     }
 
-    /*
-        public int getRequester_id() {
-            return requester_id;
-        }
 
-        public void setRequester_id(int requester_id) {
-            this.requester_id = requester_id;
-        }
+    public long getRequester_id() {
+        return requester_id;
+    }
+
+    public void setRequester_id(long requester_id) {
+        this.requester_id = requester_id;
+    }
 
 
+    public long getAssignee_id() {
+        return assignee_id;
+    }
 
-        public int getAssignee_id() {
-            return assignee_id;
-        }
+    public void setAssignee_id(long assignee_id) {
+        this.assignee_id = assignee_id;
+    }
 
-        public void setAssignee_id(int assignee_id) {
-            this.assignee_id = assignee_id;
-        }
-         */
     public String getSubject() {
         return subject;
     }
@@ -83,6 +88,14 @@ public class Ticket {
         this.url = url;
     }
 
+    public String[] getTags() {
+        return tags;
+    }
+
+    public void setTags(String[] tags) {
+        this.tags = tags;
+    }
+
     public String toString() {
         return "Ticket ID: " + id + "\n" +
                 "   Created at: " + created_at + "\n" +
@@ -92,7 +105,10 @@ public class Ticket {
     public String toStringDetails() {
         return "Ticket ID: " + id + "\n" +
                 "   Created at: " + created_at + "\n" +
+                "   Requester ID: " + requester_id + "\n" +
+                "   Assignee ID: " + assignee_id + "\n" +
                 "   Subject: " + subject + "\n" +
+                "   Tags: " + Arrays.toString(tags) + "\n" +
                 "   Description: " + description + "\n";
     }
 }
