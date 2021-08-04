@@ -16,13 +16,20 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.*;
 
-
+/**
+ * This is a Ticket Viewer program that connects with Zendesk API and display tickets information with pagination feature
+ *
+ * @author Tina Trinh - Zendesk Engineer Co-op Program 2021 Candidate
+ */
 public class App
 {
     public static void main( String[] args ) throws IOException, InterruptedException {
 
         Scanner scanner = new Scanner(System.in);
         String userChoice;
+        TicketViewer ticketViewer;
+
+
         System.out.println("\n \n");
         System.out.println("*** WELCOME TO TICKET VIEWER APP! ***");
 
@@ -39,7 +46,7 @@ public class App
 
             if (userChoice.equals("1")) {
                 try {
-                    TicketViewer ticketViewer = TicketViewer.getAllTickets();
+                    ticketViewer = TicketViewer.getAllTickets();
                     System.out.println(ticketViewer);
 
                     while (true) {
@@ -70,7 +77,6 @@ public class App
                 }
 
             } else if (userChoice.equals("2")) {
-                TicketViewer ticketViewer;
                 try {
                     System.out.print("Enter ticket id: ");
                     userChoice = scanner.nextLine();
@@ -79,7 +85,7 @@ public class App
                 } catch (NumberFormatException e) {
                     System.out.println("** ATTENTION: Invalid id. Id needs to be a positive integer (so space allowed). Returning to main menu. **");
                 } catch (IOException e) {
-                    System.out.println("** ATTENTION: Didn't find a ticket with the provided id. Returning to main menu.");
+                    System.out.println("** ATTENTION: Didn't find a ticket with the provided id. Returning to main menu. **");
                 }
             } else if (userChoice.equals("3")) {
                 System.out.println("*** THANKS FOR USING TICKETS VIEWER! ***");
@@ -90,6 +96,11 @@ public class App
         }
     }
 
+    /**+
+     * Method to get information for API authorization
+     *
+     * @return a string of encoded credential for tina.trinh@stthomas.edu Zendesk trial account
+     */
     public static String getEncodedCredential() {
         String apiTokenCredentials = "tina.trinh@stthomas.edu/token:V9mFmN2WQnT7IEK4QcbTuEBClmgJ1XUXOTqFTKZq";
         String encodedCredential = new String(Base64.getEncoder().encode(apiTokenCredentials.getBytes()));

@@ -17,25 +17,44 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
 
-
+/**
+ * Class for unit testing of the Ticket Viewer program
+ *
+ * @author Tina Trinh
+ */
 public class AppTest 
 {
+    /**
+     * Test to ensure the ticket array returned is less than or equal to 25, following the page size
+     * @throws IOException
+     * @throws InterruptedException
+     */
     @Test
     public void getAllTicketsPageSizeTest() throws IOException, InterruptedException {
         TicketViewer ticketViewer = TicketViewer.getAllTickets();
         assertTrue("getAllTickets() should return a TicketViewer object with a ticket array of at most 25 tickets", ticketViewer.tickets.length <= 25);
     }
 
+    /**
+     * Test to ensure TicketViewer toString() method works with an empty ticket array
+     * @throws IOException
+     * @throws InterruptedException
+     */
     @Test
-    public void ticketViewerToStringTestWithEmptyTicketList() throws IOException, InterruptedException {
+    public void ticketViewerToStringTestWithEmptyTicketArray() throws IOException, InterruptedException {
         TicketViewer emptyTicketViewer = TicketViewer.getAllTickets();
         emptyTicketViewer.tickets = new Ticket[0];
         String expectedString = "\n** YOUR TICKET(S) ** \n";
         expectedString = expectedString + "PAGE: " + emptyTicketViewer.pageCount + "\n";
 
-        assertEquals("Empty ticket list should display like normal with no ticket information", expectedString, emptyTicketViewer.toString());
+        assertEquals("toString() with an empty ticket array should display no ticket information", expectedString, emptyTicketViewer.toString());
     }
 
+    /**
+     * Test to ensure TicketViewer toString() method works with a ticket array containing one single ticket
+     * @throws IOException
+     * @throws InterruptedException
+     */
     @Test
     public void ticketViewerToStringTestWithOneTicket() throws IOException, InterruptedException {
         TicketViewer ticketViewer = TicketViewer.getTicketById(111);
@@ -45,9 +64,14 @@ public class AppTest
                 "   Subject: " + ticketViewer.tickets[0].getSubject() + "\n\n";
         expectedString = expectedString + "PAGE: " + ticketViewer.pageCount + "\n";
 
-        assertEquals("One element ticket list should display one ticket information in compact style", expectedString, ticketViewer.toString());
+        assertEquals("toString() with one element ticket array should display information of a single ticket in short", expectedString, ticketViewer.toString());
     }
 
+    /**
+     * Test to ensure TicketViewer toString() method works with a ticket array containing three tickets
+     * @throws IOException
+     * @throws InterruptedException
+     */
     @Test
     public void ticketViewerToStringTestWithThreeTickets() throws IOException, InterruptedException {
         Ticket[] testTicketArray = new Ticket[3];
@@ -79,17 +103,27 @@ public class AppTest
 
         expectedString = expectedString + "PAGE: " + ticketViewer.pageCount + "\n";
 
-        assertEquals("Three elements ticket list should display 3 tickets information in compact style", expectedString, ticketViewer.toString());
+        assertEquals("toString() with three elements ticket array should display information of three tickets in short", expectedString, ticketViewer.toString());
     }
 
+    /**
+     * Test to ensure TicketViewer toStringIndividual() work with an empty ticket array
+     * @throws IOException
+     * @throws InterruptedException
+     */
     @Test
-    public void ticketViewerToStringIndividualTestWithEmptyTicketList() throws IOException, InterruptedException {
+    public void ticketViewerToStringIndividualTestWithEmptyTicketArray() throws IOException, InterruptedException {
         TicketViewer ticketViewer = TicketViewer.getTicketById(120);
         ticketViewer.tickets = new Ticket[0];
         String expectedString = "\n** YOUR TICKET(S) ** \n";
-        assertEquals("Displaying individual ticket with empty ticket list should display nothing", expectedString, ticketViewer.toStringIndividual());
+        assertEquals("toStringIndividual() with an empty ticket array should display no ticket information", expectedString, ticketViewer.toStringIndividual());
     }
 
+    /**
+     * Test to ensure TicketViewer toStringIndividual() work with a ticket array containing one single ticket
+     * @throws IOException
+     * @throws InterruptedException
+     */
     @Test
     public void ticketViewerToStringIndividualTestWithOneTicket() throws IOException, InterruptedException {
         TicketViewer ticketViewer = TicketViewer.getTicketById(120);
@@ -103,6 +137,6 @@ public class AppTest
                 "   Description: " + ticketViewer.tickets[0].getDescription() + "\n\n";
         //expectedString = expectedString + "PAGE: " + ticketViewer.pageCount + "\n";
 
-        assertEquals("Displaying individual ticket with one ticket should display the ticket information in details", expectedString, ticketViewer.toStringIndividual());
+        assertEquals("toStringIndividual() with one element ticket array should display one single ticket information in details", expectedString, ticketViewer.toStringIndividual());
     }
 }

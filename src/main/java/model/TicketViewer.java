@@ -14,24 +14,54 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Objects;
 
+/**
+ * Class to make API request and represent a page of tickets object that get returned
+ *
+ * @author Tina Trinh
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TicketViewer {
+
+    /** Zendesk API for requesting tickets for this account */
     private static final String TICKETS_APi = "https://zcctina.zendesk.com/api/v2/tickets";
+    /** Tickets page size */
     private static final int PAGE_SIZE = 25;
+    /** Array of tickets per page that get returned */
     public Ticket[] tickets;
+    /** Meta information for cursor pagination */
     public Meta meta;
+    /** Links to next or previous page */
     public Links links;
+    /** Page number */
     public int pageCount;
 
+    /**
+     * Constructor with no argument as default
+     */
     public TicketViewer() {
         super();
     }
 
-    public TicketViewer(Ticket[] tickets) {
+    /**
+     * Constructor taking all information needed to construct a TicketViewer object
+     * @param tickets Ticket array
+     * @param meta Meta object with cursor pagination information
+     * @param links Links object with links to next or previous page
+     * @param pageCount an integer of the page number
+     */
+    public TicketViewer(Ticket[] tickets, Meta meta, Links links, int pageCount) {
         this.tickets = tickets;
+        this.meta = meta;
+        this.links = links;
+        this.pageCount = pageCount;
     }
 
-
+    /**
+     * Static method to request all tickets
+     * @return a TicketViewer object that represent a page of at most 25 tickets
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static TicketViewer getAllTickets() throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         String encodedCredential = App.getEncodedCredential();
@@ -56,6 +86,13 @@ public class TicketViewer {
         return ticketViewer;
     }
 
+    /**
+     * Static method to request information about a specific ticket using ticket ID
+     * @param id ticket id
+     * @return a TicketViewer object that represent a page with one single ticket
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static TicketViewer getTicketById(int id) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         String encodedCredential = App.getEncodedCredential();
@@ -78,7 +115,7 @@ public class TicketViewer {
         TicketViewer ticketViewer = mapper.readValue(response.body(), TicketViewer.class);
         ticketViewer.pageCount = 1;
 
-        // invalid id returns empty tickets array
+        // non-exist id returns an empty ticket array
         if (ticketViewer.tickets.length == 0) {
             throw new IOException();
         }
@@ -87,6 +124,12 @@ public class TicketViewer {
 
     }
 
+    /**
+     * Method to get the next page of the current page or the last page if the current page is the last
+     * @return a TicketViewer object that represent the next page of the current TicketViewer object
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public TicketViewer getNextPage() throws IOException, InterruptedException {
         if (this.meta.has_more) {
             HttpClient client = HttpClient.newHttpClient();
@@ -111,6 +154,7 @@ public class TicketViewer {
 
             // sometimes, meta.has_more returns true, but next page ticket array is empty
             // and after_cursor and before_cursor are null (API document)
+            // this condition checks for this special case
             if (ticketViewer.tickets.length == 0) {
                 return this;
             } else {
@@ -121,6 +165,12 @@ public class TicketViewer {
         return this;
     }
 
+    /**
+     * Method to get the previous page of the current page or the first page if the current page is the first
+     * @return a TicketViewer object that represent the previous page of the current TicketViewer object
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public TicketViewer getPreviousPage() throws IOException, InterruptedException {
         if (this.pageCount > 1) {
             HttpClient client = HttpClient.newHttpClient();
@@ -148,33 +198,53 @@ public class TicketViewer {
         return this;
     }
 
-
-
-
+    /**
+     * @return the current Meta instance in TicketViewer
+     */
     public Meta getMeta() {
         return meta;
     }
 
+    /**
+     * @param meta a Meta object to set the current Meta instance in TicketViewer
+     */
     public void setMeta(Meta meta) {
         this.meta = meta;
     }
 
+    /**
+     * @return the current Links instance in TicketViewer
+     */
     public Links getLinks() {
         return links;
     }
 
+    /**
+     * @param links a Links object to set the current Links instance in TicketViewer
+     */
     public void setLinks(Links links) {
         this.links = links;
     }
 
+    /**
+     * @return the current array of Ticket instance in TicketViewer
+     */
     public Ticket[] getTickets() {
         return tickets;
     }
 
+    /**
+     *
+     * @param tickets an array of Ticket to set the current Ticket array instance in TicketViewer
+     */
     public void setTickets(Ticket[] tickets) {
         this.tickets = tickets;
     }
 
+    /**
+     * Method to display tickets list in short
+     * @return a String contains tickets information
+     */
     @Override
     public String toString() {
         String finalString = "\n** YOUR TICKET(S) ** \n";
@@ -189,6 +259,10 @@ public class TicketViewer {
         return finalString;
     }
 
+    /**
+     * Method to display an individual ticket with more details
+     * @return a String contains a single ticket information with more details
+     */
     public String toStringIndividual() {
         String finalString = "\n** YOUR TICKET(S) ** \n";
         if (tickets != null && tickets.length > 0) {
