@@ -11,3 +11,5 @@ To run this program:
 - Use your IDE feature to run "App.java" to run the program
 
 The program will run and display information in your console/terminal, in which you can type in your input to interact with the program.
+
+Demo link: https://youtu.be/NIB4KZkZh6Q
