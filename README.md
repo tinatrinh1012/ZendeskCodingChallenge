@@ -15,4 +15,4 @@ To run this program:
 
 The program will run and display information in your console/terminal, in which you can type in your input to interact with the program.
 
-Demo link: https://youtu.be/NIB4KZkZh6Q
+Demo video link: https://youtu.be/NIB4KZkZh6Q
